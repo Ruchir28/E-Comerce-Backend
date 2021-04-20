@@ -1,6 +1,9 @@
+// import uuid from 'uuid'
+
+const { v1: uuidv1 } = require('uuid');
+
 const mongoose = require('mongoose');
 const crypto = require('crypto');
-import {v1 as uuidv1} from 'uuid';
 
 var Schema = mongoose.Schema;
 
@@ -54,7 +57,7 @@ userSchema.virtual("password")
    })
 
 
-userSchema.method = {
+userSchema.methods = {
 
     authenticate:function(plainpassword){
         return this.securePassword(plainpassword) === this.encry_password;

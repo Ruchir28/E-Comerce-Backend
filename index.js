@@ -51,3 +51,4 @@ app.use(cors());
 //ROUTES
 app.use('/api',require("./routes/auth"));
 
+app.use('/api',require('./routes/user'));

@@ -52,3 +52,5 @@ app.use(cors());
 app.use('/api',require("./routes/auth"));
 
 app.use('/api',require('./routes/user'));
+
+app.use('/api',require('./routes/category'));   

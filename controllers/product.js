@@ -52,15 +52,14 @@ exports.createProduct = async (req,res)=>{
             console.log(file.photo.path);
             product.photo.data = fs.readFileSync(file.photo.path);
             product.photo.contentType = file.photo.type;
-            product.save((err,product)=>{
-                if(err){
-                    return res.status(400).json({
-                        err:"Saving Product Failed"
-                    });
-                }
-            });
-            
         }
+        product.save((err,product)=>{
+            if(err){
+                return res.status(400).json({
+                    err:"Saving Product Failed"
+                });
+            }
+        });
 
         return res.json(product);
     })
@@ -153,7 +152,7 @@ exports.getAllProducts = (req,res)=>{
     .select("-photo")
     .limit(limit)
     .populate("category")
-    .sort([[sortBy,"asc"]])
+    .sort([[sortBy,"ascending"]])
     .exec((err,products)=>{
         if(err){
             return res.status(400).json({
@@ -162,4 +161,23 @@ exports.getAllProducts = (req,res)=>{
         }
         return res.json(products);
     });
+}
+
+exports.updateStock = (req,res,next)=>{
+    let myOperations = req.body.order.products.map((prod)=>{
+        return {
+            updateOne:{
+                filter:{_id:prod._id},
+                update:{$inc:{stock:-prod.count,sold:+prod.count}}
+            }
+        }
+    });
+    Product.bulkWrite(myOperations,{},(err,products)=>{
+        if(err){
+            return res.status(400).json({
+                err:"Bulk Write Failed"
+            });
+        }
+        next();
+    })
 }
